@@ -1,0 +1,66 @@
+# Despliegue automático a GitHub Pages.
+# Se ejecuta en cada push a main (y a mano desde la pestaña Actions).
+# La app queda publicada en: https://dia-smt.github.io/ComercIA/
+
+name: Desplegar a GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Si se encolan varios despliegues, solo corre el último
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Preparar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Compilar (con base /ComercIA/ para Pages)
+        run: npm run build -- --base=/ComercIA/
+
+      # GitHub Pages sirve 404.html cuando la ruta no existe como archivo.
+      # Copiando el index ahí, las rutas de la SPA (/registro, /panel, etc.)
+      # funcionan también al entrar directo por URL o escanear el QR.
+      - name: Habilitar rutas de SPA
+        run: cp dist/index.html dist/404.html
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Subir el sitio compilado
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4

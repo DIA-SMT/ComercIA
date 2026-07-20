@@ -5,7 +5,9 @@ import { QRCodeCanvas } from 'qrcode.react'
 export default function Inicio({ sesion }) {
   const referenciaMarco = useRef(null)
   const [aviso, setAviso] = useState('')
-  const urlPublica = `${window.location.origin}/registro`
+  // Respeta la subcarpeta cuando la app no vive en la raíz del dominio
+  // (en GitHub Pages es /ComercIA/registro; en desarrollo, /registro).
+  const urlPublica = new URL(`${import.meta.env.BASE_URL}registro`, window.location.origin).href
 
   function descargarQR() {
     const canvas = referenciaMarco.current?.querySelector('canvas')
