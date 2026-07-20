@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import { formatearFecha } from '../lib/csv'
+import { pedirRecomendaciones } from '../lib/ia'
 import FormularioRelevamiento from '../components/FormularioRelevamiento.jsx'
 
 export default function Detalle() {
@@ -12,6 +13,7 @@ export default function Detalle() {
   const [guardando, setGuardando] = useState(false)
   const [error, setError] = useState('')
   const [exito, setExito] = useState(false)
+  const [generando, setGenerando] = useState(false)
 
   useEffect(() => {
     async function cargarRegistro() {
@@ -46,6 +48,20 @@ export default function Detalle() {
     }
     setExito(true)
     window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  async function regenerarRecomendaciones() {
+    setGenerando(true)
+    setError('')
+    const sugerencias = await pedirRecomendaciones(id, registro)
+    setGenerando(false)
+    if (sugerencias.length === 0) {
+      setError(
+        'No se pudieron generar las recomendaciones. Revisá que la Edge Function "ia" esté desplegada y que el secreto OPENROUTER_API_KEY esté cargado.',
+      )
+      return
+    }
+    setRegistro((previo) => ({ ...previo, recomendaciones_ia: sugerencias }))
   }
 
   async function eliminar() {
@@ -99,6 +115,39 @@ export default function Detalle() {
           ✓ Cambios guardados correctamente.
         </div>
       )}
+
+      <div className="tarjeta caja-recomendaciones no-imprimir">
+        <h3>Recomendaciones de IA para este comercio</h3>
+        {registro.recomendaciones_ia?.length > 0 ? (
+          <>
+            <ul className="lista-recomendaciones">
+              {registro.recomendaciones_ia.map((recomendacion, indice) => (
+                <li key={indice}>{recomendacion}</li>
+              ))}
+            </ul>
+            {registro.recomendaciones_generadas_at && (
+              <p className="nota-recomendaciones">
+                Generadas el {formatearFecha(registro.recomendaciones_generadas_at)}
+              </p>
+            )}
+          </>
+        ) : (
+          <p className="seccion-descripcion">
+            Todavía no hay recomendaciones generadas para este comercio.
+          </p>
+        )}
+        <button
+          className="boton boton-secundario"
+          onClick={regenerarRecomendaciones}
+          disabled={generando}
+        >
+          {generando
+            ? 'Generando…'
+            : registro.recomendaciones_ia?.length > 0
+              ? 'Volver a generar'
+              : 'Generar recomendaciones'}
+        </button>
+      </div>
 
       <FormularioRelevamiento
         key={registro.id}

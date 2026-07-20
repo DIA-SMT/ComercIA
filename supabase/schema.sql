@@ -29,7 +29,13 @@ create table if not exists public.relevamientos (
   herramientas_ia_otras text,
   ia_para_que text,
   nivel_conocimiento text,
+  sabe_prompt text,
+  interes_incorporar_ia text,
   interes_capacitacion text,
+
+  -- Recomendaciones generadas por IA (OpenAI, vía Edge Function)
+  recomendaciones_ia text[] default '{}',
+  recomendaciones_generadas_at timestamptz,
 
   -- Tecnología e infraestructura
   tiene_internet boolean,

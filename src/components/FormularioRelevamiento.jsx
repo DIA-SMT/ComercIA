@@ -6,6 +6,7 @@ import {
   HERRAMIENTAS_IA,
   INTERES_OPCIONES,
   NIVELES_CONOCIMIENTO,
+  PROMPT_OPCIONES,
   REGISTRO_VACIO,
   RUBROS,
   SOFTWARE_OPCIONES,
@@ -355,6 +356,26 @@ export default function FormularioRelevamiento({
         </div>
 
         <div className="campo">
+          <span className="etiqueta">¿Sabés lo que es un prompt?</span>
+          <OpcionesBoton
+            opciones={PROMPT_OPCIONES.map((opcion) => ({ valor: opcion, texto: opcion }))}
+            valor={datos.sabe_prompt}
+            onCambio={(valor) => cambiar('sabe_prompt', valor)}
+            nombre="¿Sabés lo que es un prompt?"
+          />
+        </div>
+
+        <div className="campo">
+          <span className="etiqueta">¿Estás interesado en incorporar IA en tu negocio?</span>
+          <OpcionesBoton
+            opciones={INTERES_OPCIONES.map((opcion) => ({ valor: opcion, texto: opcion }))}
+            valor={datos.interes_incorporar_ia}
+            onCambio={(valor) => cambiar('interes_incorporar_ia', valor)}
+            nombre="¿Estás interesado en incorporar IA en tu negocio?"
+          />
+        </div>
+
+        <div className="campo">
           <span className="etiqueta">¿Les interesa capacitarse en IA?</span>
           <OpcionesBoton
             opciones={INTERES_OPCIONES.map((opcion) => ({ valor: opcion, texto: opcion }))}
@@ -363,6 +384,7 @@ export default function FormularioRelevamiento({
             nombre="¿Les interesa capacitarse en IA?"
           />
         </div>
+
       </fieldset>
 
       <fieldset className="seccion-form">

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 
 export default function Login() {
@@ -62,6 +63,9 @@ export default function Login() {
             {enviando ? 'Ingresando…' : 'Ingresar'}
           </button>
         </form>
+        <p className="volver-inicio">
+          <Link to="/">← Volver al inicio</Link>
+        </p>
       </div>
     </div>
   )

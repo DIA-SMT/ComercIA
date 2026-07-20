@@ -6,7 +6,7 @@ export default function Layout({ children }) {
 
   async function cerrarSesion() {
     await supabase.auth.signOut()
-    navegar('/login')
+    navegar('/')
   }
 
   const claseEnlace = ({ isActive }) => (isActive ? 'nav-enlace activo' : 'nav-enlace')
@@ -15,18 +15,18 @@ export default function Layout({ children }) {
     <>
       <nav className="nav">
         <div className="nav-contenido">
-          <NavLink to="/panel" className="nav-marca">
+          <NavLink to="/" className="nav-marca">
             Comerc<span>IA</span>
           </NavLink>
           <div className="nav-enlaces">
+            <NavLink to="/" end className={claseEnlace}>
+              Nueva encuesta
+            </NavLink>
             <NavLink to="/panel" end className={claseEnlace}>
               Panel
             </NavLink>
             <NavLink to="/carga" className={claseEnlace}>
               Nueva carga
-            </NavLink>
-            <NavLink to="/qr" className={claseEnlace}>
-              Código QR
             </NavLink>
             <button className="nav-salir" onClick={cerrarSesion}>
               Salir

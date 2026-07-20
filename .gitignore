@@ -2,3 +2,6 @@ node_modules
 dist
 .env
 .env.local
+
+# Archivos temporales de la CLI de Supabase (los genera "supabase link")
+supabase/.temp

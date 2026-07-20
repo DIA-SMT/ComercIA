@@ -18,6 +18,8 @@ const COLUMNAS = [
   ['Herramientas de IA', (r) => listaHerramientas(r)],
   ['Para qué usan IA', (r) => r.ia_para_que],
   ['Nivel de conocimiento', (r) => r.nivel_conocimiento],
+  ['¿Sabe qué es un prompt?', (r) => r.sabe_prompt],
+  ['Interés en incorporar IA', (r) => r.interes_incorporar_ia],
   ['Interés en capacitarse', (r) => r.interes_capacitacion],
   ['Internet en el local', (r) => siNo(r.tiene_internet)],
   ['Software de gestión', (r) => listaSoftware(r)],
@@ -25,6 +27,7 @@ const COLUMNAS = [
   ['Cuál (proveedores)', (r) => r.proveedores_cual],
   ['Consultas de tecnología', (r) => r.consultas_tecnologia],
   ['Observaciones', (r) => r.observaciones],
+  ['Recomendaciones de IA', (r) => (r.recomendaciones_ia || []).join(' | ')],
 ]
 
 function siNo(valor) {

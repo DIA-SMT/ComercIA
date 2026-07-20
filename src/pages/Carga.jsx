@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
+import { pedirRecomendaciones } from '../lib/ia'
+import { nuevoId } from '../lib/id'
 import FormularioRelevamiento from '../components/FormularioRelevamiento.jsx'
 
 export default function Carga() {
@@ -14,8 +16,10 @@ export default function Carga() {
     setGuardando(true)
     setError('')
     setExito(false)
+    const id = nuevoId()
     const { error: errorInsert } = await supabase.from('relevamientos').insert({
       ...datos,
+      id,
       origen: 'relevador',
     })
     setGuardando(false)
@@ -23,6 +27,10 @@ export default function Carga() {
       setError('No se pudo guardar el relevamiento. Revisá la conexión e intentá de nuevo.')
       return
     }
+
+    // Las recomendaciones se generan y guardan en segundo plano: el relevador
+    // no espera y las ve después en el detalle del comercio.
+    pedirRecomendaciones(id, datos)
     setExito(true)
     setClaveForm((clave) => clave + 1) // reinicia el formulario para cargar el siguiente local
     window.scrollTo({ top: 0, behavior: 'smooth' })

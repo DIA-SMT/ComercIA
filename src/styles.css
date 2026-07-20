@@ -843,9 +843,323 @@ table.tabla {
   padding: 3rem 1rem;
 }
 
+/* ---------- Inicio ---------- */
+
+.enlace-encuesta {
+  margin: 0.25rem 0 0;
+  font-size: 0.92rem;
+}
+
+.enlace-encuesta a {
+  color: var(--azul-600);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.enlace-encuesta a:hover {
+  text-decoration: underline;
+}
+
+.volver-inicio {
+  text-align: center;
+  margin: 1.1rem 0 0;
+  font-size: 0.9rem;
+}
+
+.volver-inicio a {
+  color: var(--gris-500);
+  text-decoration: none;
+}
+
+.volver-inicio a:hover {
+  color: var(--azul-600);
+  text-decoration: underline;
+}
+
+/* ---------- Recomendaciones de IA ---------- */
+
+.caja-recomendaciones {
+  margin-bottom: 1rem;
+  border-left: 4px solid var(--azul-500);
+}
+
+.caja-recomendaciones h3 {
+  font-size: 1.05rem;
+  color: var(--azul-800);
+  margin-bottom: 0.75rem;
+}
+
+.lista-recomendaciones {
+  margin: 0 0 0.75rem;
+  padding-left: 1.1rem;
+}
+
+.lista-recomendaciones li {
+  margin-bottom: 0.6rem;
+  color: var(--gris-700);
+  line-height: 1.55;
+}
+
+.nota-recomendaciones {
+  font-size: 0.83rem;
+  color: var(--gris-500);
+  margin: 0 0 0.75rem;
+}
+
+.caja-gracias-ancha {
+  background: var(--blanco);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: 1.75rem 1.25rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.caja-gracias-ancha .icono {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--verde-claro);
+  color: var(--verde);
+  font-size: 1.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+.caja-gracias-ancha h2 {
+  font-size: 1.3rem;
+  color: var(--azul-900);
+}
+
+.caja-gracias-ancha p {
+  color: var(--gris-700);
+  margin: 0;
+}
+
+/* ---------- Asistente educativo ---------- */
+
+/* Burbuja flotante, siempre visible en la encuesta pública */
+.lanzador-asistente {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--azul-800);
+  color: var(--blanco);
+  border: none;
+  border-radius: 999px;
+  padding: 0.8rem 1.15rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(22, 40, 63, 0.32);
+}
+
+.lanzador-asistente:hover {
+  background: var(--azul-700);
+}
+
+.lanzador-asistente:focus-visible {
+  outline: 3px solid var(--azul-500);
+  outline-offset: 2px;
+}
+
+.icono-lanzador {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+/* En celulares queda solo el círculo, para no tapar el formulario */
+@media (max-width: 480px) {
+  .lanzador-asistente {
+    width: 58px;
+    height: 58px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
+  }
+
+  .texto-lanzador {
+    display: none;
+  }
+}
+
+/* Aire al final de la página para que la burbuja no tape el último texto */
+.leyenda-privacidad {
+  margin-bottom: 4.5rem;
+}
+
+.fondo-asistente {
+  position: fixed;
+  inset: 0;
+  background: rgba(22, 40, 63, 0.55);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 50;
+  padding: 0;
+}
+
+@media (min-width: 640px) {
+  .fondo-asistente {
+    align-items: center;
+    padding: 1rem;
+  }
+}
+
+.panel-asistente {
+  background: var(--blanco);
+  width: 100%;
+  max-width: 520px;
+  height: 88vh;
+  max-height: 620px;
+  border-radius: 14px 14px 0 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: var(--sombra-media);
+}
+
+@media (min-width: 640px) {
+  .panel-asistente {
+    border-radius: 14px;
+  }
+}
+
+.encabezado-asistente {
+  background: var(--azul-800);
+  color: var(--blanco);
+  padding: 0.9rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.subtitulo-asistente {
+  font-size: 0.82rem;
+  color: #d7e3f0;
+}
+
+.cerrar-asistente {
+  background: none;
+  border: none;
+  color: #d7e3f0;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  line-height: 1;
+}
+
+.cerrar-asistente:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--blanco);
+}
+
+.mensajes-asistente {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  background: var(--fondo);
+}
+
+.burbuja {
+  max-width: 85%;
+  padding: 0.65rem 0.9rem;
+  border-radius: 14px;
+  font-size: 0.93rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.burbuja-asistente {
+  background: var(--blanco);
+  color: var(--gris-900);
+  border: 1px solid var(--gris-200);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+.burbuja-usuario {
+  background: var(--azul-800);
+  color: var(--blanco);
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.burbuja-pensando {
+  color: var(--gris-500);
+  font-style: italic;
+}
+
+.sugerencias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.25rem;
+}
+
+.chip-sugerencia {
+  background: var(--blanco);
+  border: 1px solid var(--azul-500);
+  color: var(--azul-700);
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.chip-sugerencia:hover {
+  background: var(--azul-50);
+}
+
+.pie-asistente {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-top: 1px solid var(--gris-200);
+  background: var(--blanco);
+  flex-shrink: 0;
+}
+
+.pie-asistente textarea {
+  flex: 1;
+  border: 1px solid var(--gris-300);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  font-family: inherit;
+  font-size: 1rem;
+  resize: none;
+  max-height: 120px;
+  color: var(--gris-900);
+}
+
+.pie-asistente textarea:focus {
+  outline: 2px solid var(--azul-500);
+  outline-offset: 1px;
+}
+
+.pie-asistente .boton {
+  padding: 0.6rem 1rem;
+  flex-shrink: 0;
+}
+
 @media print {
   .nav,
   .boton,
+  .lanzador-asistente,
   .no-imprimir {
     display: none !important;
   }

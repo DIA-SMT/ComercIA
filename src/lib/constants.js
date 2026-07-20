@@ -26,6 +26,8 @@ export const NIVELES_CONOCIMIENTO = ['Ninguno', 'Básico', 'Intermedio', 'Avanza
 
 export const INTERES_OPCIONES = ['Sí', 'No', 'Tal vez']
 
+export const PROMPT_OPCIONES = ['Sí', 'No', 'Más o menos']
+
 export const SOFTWARE_OPCIONES = [
   'Sistema de ventas/facturación',
   'Gestión de stock',
@@ -54,6 +56,8 @@ export const REGISTRO_VACIO = {
   herramientas_ia_otras: '',
   ia_para_que: '',
   nivel_conocimiento: '',
+  sabe_prompt: '',
+  interes_incorporar_ia: '',
   interes_capacitacion: '',
   tiene_internet: null,
   software_gestion: [],
