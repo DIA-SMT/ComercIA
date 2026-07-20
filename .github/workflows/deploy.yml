@@ -1,6 +1,7 @@
 # Despliegue automático a GitHub Pages.
 # Se ejecuta en cada push a main (y a mano desde la pestaña Actions).
-# La app queda publicada en: https://dia-smt.github.io/ComercIA/
+# Compila la app y publica el resultado en la rama gh-pages, que GitHub
+# Pages sirve en: https://dia-smt.github.io/ComercIA/
 
 name: Desplegar a GitHub Pages
 
@@ -10,9 +11,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 # Si se encolan varios despliegues, solo corre el último
 concurrency:
@@ -20,7 +19,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  desplegar:
     runs-on: ubuntu-latest
     steps:
       - name: Descargar el código
@@ -44,23 +43,8 @@ jobs:
       - name: Habilitar rutas de SPA
         run: cp dist/index.html dist/404.html
 
-      - name: Configurar GitHub Pages
-        uses: actions/configure-pages@v5
+      - name: Publicar en la rama gh-pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          enablement: true
-
-      - name: Subir el sitio compilado
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Publicar
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
