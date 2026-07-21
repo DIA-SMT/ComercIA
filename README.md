@@ -118,9 +118,7 @@ La app abre en `/` sin pedir nada, para que generar y compartir la encuesta no t
 
 ## Despliegue
 
-**URL principal (producción): https://comerc-ia-vert.vercel.app** — proyecto de Vercel conectado al repo; cada push a `main` redespliega solo. El archivo [`vercel.json`](vercel.json) redirige todas las rutas al `index.html` para que los links directos y el QR funcionen.
-
-También queda publicada una copia en GitHub Pages (https://dia-smt.github.io/ComercIA/) vía el workflow de Actions. Ojo: el QR que genera la app codifica el dominio desde el que se la abre, así que para compartir usá siempre la URL principal.
+**Producción: https://comerc-ia-vert.vercel.app** — proyecto de Vercel conectado al repo; cada push a `main` redespliega solo. El archivo [`vercel.json`](vercel.json) redirige todas las rutas al `index.html` para que los links directos y el QR funcionen.
 
 Al ser una SPA con rutas, el hosting debe redirigir todas las rutas a `index.html`:
 
