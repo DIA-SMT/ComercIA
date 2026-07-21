@@ -4,18 +4,22 @@ import { supabase } from '../supabaseClient'
 import { pedirRecomendaciones } from '../lib/ia'
 import { nuevoId } from '../lib/id'
 import FormularioRelevamiento from '../components/FormularioRelevamiento.jsx'
+import AsistenteIA from '../components/AsistenteIA.jsx'
+import DevolucionIA from '../components/DevolucionIA.jsx'
+
+const DEVOLUCION_INICIAL = { saludo: '', mensaje: '', recomendaciones: [], cierre: '' }
 
 export default function Carga() {
   const navegar = useNavigate()
   const [guardando, setGuardando] = useState(false)
   const [error, setError] = useState('')
-  const [exito, setExito] = useState(false)
-  const [claveForm, setClaveForm] = useState(0)
+  const [enviado, setEnviado] = useState(false)
+  const [devolucion, setDevolucion] = useState(DEVOLUCION_INICIAL)
+  const [generandoRecomendaciones, setGenerandoRecomendaciones] = useState(false)
 
   async function guardar(datos) {
     setGuardando(true)
     setError('')
-    setExito(false)
     const id = nuevoId()
     const { error: errorInsert } = await supabase.from('relevamientos').insert({
       ...datos,
@@ -28,44 +32,88 @@ export default function Carga() {
       return
     }
 
-    // Las recomendaciones se generan y guardan en segundo plano: el relevador
-    // no espera y las ve después en el detalle del comercio.
-    pedirRecomendaciones(id, datos)
-    setExito(true)
-    setClaveForm((clave) => clave + 1) // reinicia el formulario para cargar el siguiente local
+    // El relevamiento ya quedó guardado. La devolución se pide después y
+    // continúa siendo best-effort, igual que en la encuesta pública.
+    setEnviado(true)
     window.scrollTo({ top: 0, behavior: 'smooth' })
+
+    setGenerandoRecomendaciones(true)
+    const resultado = await pedirRecomendaciones(id, datos)
+    setDevolucion(resultado)
+    setGenerandoRecomendaciones(false)
+  }
+
+  function cargarOtro() {
+    setEnviado(false)
+    setDevolucion(DEVOLUCION_INICIAL)
+    setGenerandoRecomendaciones(false)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  if (enviado) {
+    return (
+      <>
+        <div className="contenedor-angosto carga-relevamiento">
+          <div className="caja-gracias-ancha">
+            <div className="icono" aria-hidden="true">
+              ✓
+            </div>
+            <h2>¡Gracias! Tus datos fueron registrados.</h2>
+            <p>
+              Con esta información vamos a organizar la capacitación sobre Inteligencia Artificial.
+              Nos vamos a poner en contacto por email.
+            </p>
+          </div>
+
+          <DevolucionIA generando={generandoRecomendaciones} devolucion={devolucion} />
+
+          <div className="acciones-form acciones-carga-completa">
+            <button type="button" className="boton" onClick={cargarOtro}>
+              Cargar otro comercio
+            </button>
+            <button
+              type="button"
+              className="boton boton-secundario"
+              onClick={() => navegar('/panel')}
+            >
+              Ir al panel
+            </button>
+          </div>
+
+          <p className="leyenda-privacidad">
+            🔒 Tus datos personales se usan únicamente para organizar la capacitación sobre
+            Inteligencia Artificial y no se comparten con terceros.
+          </p>
+        </div>
+        <AsistenteIA />
+      </>
+    )
   }
 
   return (
     <>
-      <h1 className="titulo-pagina">Nueva carga</h1>
-      <p className="subtitulo-pagina">
-        Relevamiento cargado por el equipo (origen: relevador).
-      </p>
-      {error && (
-        <div className="aviso aviso-error" role="alert">
-          {error}
-        </div>
-      )}
-      {exito && (
-        <div className="aviso aviso-exito" role="status">
-          ✓ Relevamiento guardado correctamente. Podés cargar el siguiente comercio o{' '}
-          <a href="#/" onClick={(e) => { e.preventDefault(); navegar('/panel') }}>
-            ir al panel
-          </a>
-          .
-        </div>
-      )}
-      <div className="contenedor-angosto" style={{ margin: 0 }}>
+      <div className="contenedor-angosto carga-relevamiento">
+        <h1 className="titulo-pagina">Nueva carga</h1>
+        <p className="subtitulo-pagina">
+          La misma encuesta que completa el comercio, cargada por el equipo relevador.
+        </p>
+        {error && (
+          <div className="aviso aviso-error" role="alert">
+            {error}
+          </div>
+        )}
         <FormularioRelevamiento
-          key={claveForm}
-          modo="relevador"
-          mostrarEstado={false}
+          modo="publico"
           guardando={guardando}
           textoBoton="Guardar relevamiento"
           onGuardar={guardar}
         />
+        <p className="leyenda-privacidad">
+          🔒 Tus datos personales se usan únicamente para organizar la capacitación sobre
+          Inteligencia Artificial y no se comparten con terceros.
+        </p>
       </div>
+      <AsistenteIA />
     </>
   )
 }

@@ -22,6 +22,11 @@ alter table public.relevamientos
 alter table public.relevamientos
   add column if not exists recomendaciones_generadas_at timestamptz;
 
+-- Devolución completa que ve el comercio al terminar la encuesta
+-- (saludo, mensaje, recomendaciones y cierre generados por la IA)
+alter table public.relevamientos
+  add column if not exists devolucion_ia jsonb;
+
 -- ============================================================
 -- Nota sobre seguridad:
 -- Las recomendaciones las escribe la Edge Function usando la

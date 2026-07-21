@@ -36,6 +36,7 @@ create table if not exists public.relevamientos (
   -- Recomendaciones generadas por IA (OpenAI, vía Edge Function)
   recomendaciones_ia text[] default '{}',
   recomendaciones_generadas_at timestamptz,
+  devolucion_ia jsonb,
 
   -- Tecnología e infraestructura
   tiene_internet boolean,

@@ -27,21 +27,32 @@ function soloCamposRelevantes(datos) {
   return recorte
 }
 
+const DEVOLUCION_VACIA = { saludo: '', mensaje: '', recomendaciones: [], cierre: '' }
+
 /**
- * Pide a la Edge Function las recomendaciones de IA para un comercio.
- * Si `id` viene, la función también las guarda en la fila correspondiente.
- * Nunca lanza excepción: ante cualquier problema devuelve una lista vacía,
+ * Pide a la Edge Function la devolución de IA para un comercio: un objeto
+ * { saludo, mensaje, recomendaciones, cierre }. Si `id` viene, la función
+ * también la guarda en la fila correspondiente.
+ *
+ * Nunca lanza excepción: ante cualquier problema devuelve la forma vacía,
  * porque el relevamiento ya quedó guardado y no queremos romper el flujo.
+ * (Si el backend todavía corre la versión vieja que devolvía solo el array,
+ * los textos vienen vacíos y la pantalla usa sus versiones genéricas.)
  */
 export async function pedirRecomendaciones(id, datos) {
   try {
     const { data, error } = await supabase.functions.invoke('ia', {
       body: { accion: 'recomendaciones', id, datos: soloCamposRelevantes(datos) },
     })
-    if (error || !data?.recomendaciones) return []
-    return data.recomendaciones
+    if (error || !Array.isArray(data?.recomendaciones)) return DEVOLUCION_VACIA
+    return {
+      saludo: typeof data.saludo === 'string' ? data.saludo : '',
+      mensaje: typeof data.mensaje === 'string' ? data.mensaje : '',
+      recomendaciones: data.recomendaciones,
+      cierre: typeof data.cierre === 'string' ? data.cierre : '',
+    }
   } catch {
-    return []
+    return DEVOLUCION_VACIA
   }
 }
 

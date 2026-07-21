@@ -53,7 +53,7 @@ export default function Detalle() {
   async function regenerarRecomendaciones() {
     setGenerando(true)
     setError('')
-    const sugerencias = await pedirRecomendaciones(id, registro)
+    const { recomendaciones: sugerencias } = await pedirRecomendaciones(id, registro)
     setGenerando(false)
     if (sugerencias.length === 0) {
       setError(
