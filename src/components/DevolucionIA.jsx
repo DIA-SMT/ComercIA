@@ -1,3 +1,6 @@
+import { useState } from 'react'
+import { guardarOpinionRecomendacion } from '../lib/ia'
+
 const DEVOLUCION_GENERICA = {
   saludo: 'Gracias por abrirle la puerta a nuevas ideas para tu negocio',
   mensaje:
@@ -6,7 +9,30 @@ const DEVOLUCION_GENERICA = {
     'Este puede ser tu primer paso: aprender de a poco también es una forma de hacer crecer tu negocio.',
 }
 
-export default function DevolucionIA({ generando, generada, devolucion, onGenerar }) {
+export default function DevolucionIA({
+  generando,
+  generada,
+  devolucion,
+  relevamientoId,
+  onGenerar,
+}) {
+  const [opinion, setOpinion] = useState(null)
+  const [guardandoOpinion, setGuardandoOpinion] = useState(false)
+  const [errorOpinion, setErrorOpinion] = useState('')
+
+  async function responderOpinion(gusto) {
+    if (guardandoOpinion || opinion !== null) return
+    setGuardandoOpinion(true)
+    setErrorOpinion('')
+    const guardada = await guardarOpinionRecomendacion(relevamientoId, gusto)
+    setGuardandoOpinion(false)
+    if (guardada) {
+      setOpinion(gusto)
+    } else {
+      setErrorOpinion('No pudimos guardar tu respuesta. Probá de nuevo.')
+    }
+  }
+
   if (!generada && !generando) {
     return (
       <section className="tarjeta invitacion-recomendacion">
@@ -81,6 +107,44 @@ export default function DevolucionIA({ generando, generada, devolucion, onGenera
       )}
 
       <blockquote className="cierre-devolucion">{cierre}</blockquote>
+
+      {tieneIdeas && (
+        <div className="encuesta-recomendacion">
+          {opinion === null ? (
+            <>
+              <h4>¿Te gustó la recomendación?</h4>
+              <div className="opciones-opinion" role="group" aria-label="¿Te gustó la recomendación?">
+                <button
+                  type="button"
+                  className="boton-opinion"
+                  disabled={guardandoOpinion}
+                  onClick={() => responderOpinion(true)}
+                >
+                  Sí
+                </button>
+                <button
+                  type="button"
+                  className="boton-opinion"
+                  disabled={guardandoOpinion}
+                  onClick={() => responderOpinion(false)}
+                >
+                  No
+                </button>
+              </div>
+              {guardandoOpinion && <p className="estado-opinion">Guardando respuesta…</p>}
+              {errorOpinion && (
+                <p className="error-opinion" role="alert">
+                  {errorOpinion}
+                </p>
+              )}
+            </>
+          ) : (
+            <p className="opinion-guardada" role="status">
+              Gracias por tu respuesta.
+            </p>
+          )}
+        </div>
+      )}
     </section>
   )
 }

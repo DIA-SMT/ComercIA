@@ -277,6 +277,42 @@ async function guardarDevolucion(id: string, devolucion: Devolucion) {
   if (error) throw new Error(`No se pudieron guardar las recomendaciones: ${error.message}`)
 }
 
+async function guardarOpinionRecomendacion(id: string, gusto: boolean) {
+  const url = Deno.env.get('SUPABASE_URL')
+  const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+  if (!url || !serviceKey) throw new Error('Faltan las variables de entorno de Supabase')
+
+  const supabase = createClient(url, serviceKey)
+  const { data: registro, error: errorConsulta } = await supabase
+    .from('relevamientos')
+    .select('recomendaciones_generadas_at, recomendacion_gusto')
+    .eq('id', id)
+    .maybeSingle()
+
+  if (errorConsulta) throw new Error(`No se pudo consultar la opinión: ${errorConsulta.message}`)
+  if (!registro?.recomendaciones_generadas_at) {
+    throw new Error('No se encontró una recomendación generada para valorar')
+  }
+  if (typeof registro.recomendacion_gusto === 'boolean') {
+    if (registro.recomendacion_gusto === gusto) return
+    throw new Error('La opinión sobre esta recomendación ya fue registrada')
+  }
+
+  const { data, error } = await supabase
+    .from('relevamientos')
+    .update({
+      recomendacion_gusto: gusto,
+      recomendacion_opinada_at: new Date().toISOString(),
+    })
+    .eq('id', id)
+    .is('recomendacion_gusto', null)
+    .select('id')
+    .maybeSingle()
+
+  if (error) throw new Error(`No se pudo guardar la opinión: ${error.message}`)
+  if (!data) throw new Error('La opinión sobre esta recomendación ya fue registrada')
+}
+
 // ---------- Acción 2: asistente educativo ----------
 
 const INSTRUCCIONES_ASISTENTE = `
@@ -332,6 +368,16 @@ Deno.serve(async (peticion) => {
 
       // Devuelve saludo, mensaje, recomendaciones y cierre en un solo objeto.
       return responder(devolucion)
+    }
+
+    if (accion === 'opinion_recomendacion') {
+      const { id, gusto } = cuerpo
+      if (typeof id !== 'string' || typeof gusto !== 'boolean') {
+        return responder({ error: 'Faltan los datos de la opinión' }, 400)
+      }
+
+      await guardarOpinionRecomendacion(id, gusto)
+      return responder({ ok: true })
     }
 
     if (accion === 'chat') {

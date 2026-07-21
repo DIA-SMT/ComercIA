@@ -37,6 +37,8 @@ create table if not exists public.relevamientos (
   recomendaciones_ia text[] default '{}',
   recomendaciones_generadas_at timestamptz,
   devolucion_ia jsonb,
+  recomendacion_gusto boolean,
+  recomendacion_opinada_at timestamptz,
 
   -- Tecnología e infraestructura
   tiene_internet boolean,

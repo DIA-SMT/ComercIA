@@ -80,6 +80,7 @@ export default function Carga() {
             generando={generandoRecomendaciones}
             generada={recomendacionGenerada}
             devolucion={devolucion}
+            relevamientoId={relevamientoGuardado?.id}
             onGenerar={generarRecomendacion}
           />
 

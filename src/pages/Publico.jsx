@@ -86,6 +86,7 @@ export default function Publico() {
             generando={generandoRecomendaciones}
             generada={recomendacionGenerada}
             devolucion={devolucion}
+            relevamientoId={relevamientoGuardado?.id}
             onGenerar={generarRecomendacion}
           />
 

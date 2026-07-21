@@ -56,6 +56,18 @@ export async function pedirRecomendaciones(id, datos) {
   }
 }
 
+/** Guarda la opinión de un comercio sobre la recomendación generada. */
+export async function guardarOpinionRecomendacion(id, gusto) {
+  try {
+    const { data, error } = await supabase.functions.invoke('ia', {
+      body: { accion: 'opinion_recomendacion', id, gusto },
+    })
+    return !error && data?.ok === true
+  } catch {
+    return false
+  }
+}
+
 /**
  * Envía la conversación al asistente educativo y devuelve su respuesta.
  * Lanza excepción para que el chat pueda mostrar un mensaje de error.

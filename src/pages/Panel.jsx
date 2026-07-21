@@ -74,12 +74,28 @@ export default function Panel() {
     const usanIA = registros.filter((r) => r.usa_ia === true).length
     const noUsanIA = registros.filter((r) => r.usa_ia === false).length
     const interesados = registros.filter((r) => r.interes_capacitacion === 'Sí').length
+    const opinionesPositivas = registros.filter((r) => r.recomendacion_gusto === true).length
+    const opinionesNegativas = registros.filter((r) => r.recomendacion_gusto === false).length
+    const totalOpiniones = opinionesPositivas + opinionesNegativas
+    const porcentajeOpinionesPositivas = totalOpiniones
+      ? Math.round((opinionesPositivas / totalOpiniones) * 100)
+      : null
     const porRubro = {}
     registros.forEach((r) => {
       porRubro[r.rubro] = (porRubro[r.rubro] || 0) + 1
     })
     const rubrosOrdenados = Object.entries(porRubro).sort((a, b) => b[1] - a[1])
-    return { total, usanIA, noUsanIA, interesados, rubrosOrdenados }
+    return {
+      total,
+      usanIA,
+      noUsanIA,
+      interesados,
+      opinionesPositivas,
+      opinionesNegativas,
+      totalOpiniones,
+      porcentajeOpinionesPositivas,
+      rubrosOrdenados,
+    }
   }, [registros])
 
   const maxRubro = metricas.rubrosOrdenados[0]?.[1] || 1
@@ -125,6 +141,18 @@ export default function Panel() {
         <div className="metrica">
           <div className="valor">{metricas.rubrosOrdenados.length}</div>
           <div className="detalle">Rubros distintos</div>
+        </div>
+        <div className="metrica">
+          <div className="valor">
+            {metricas.porcentajeOpinionesPositivas === null
+              ? '—'
+              : `${metricas.porcentajeOpinionesPositivas}%`}
+          </div>
+          <div className="detalle">Les gustó la recomendación</div>
+          <div className="comparativa">
+            {metricas.opinionesPositivas} sí · {metricas.opinionesNegativas} no ·{' '}
+            {metricas.totalOpiniones} respuestas
+          </div>
         </div>
       </div>
 
