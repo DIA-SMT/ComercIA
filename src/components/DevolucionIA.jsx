@@ -6,7 +6,27 @@ const DEVOLUCION_GENERICA = {
     'Este puede ser tu primer paso: aprender de a poco también es una forma de hacer crecer tu negocio.',
 }
 
-export default function DevolucionIA({ generando, devolucion }) {
+export default function DevolucionIA({ generando, generada, devolucion, onGenerar }) {
+  if (!generada && !generando) {
+    return (
+      <section className="tarjeta invitacion-recomendacion">
+        <span className="icono-devolucion" aria-hidden="true">
+          ✦
+        </span>
+        <div>
+          <h3>Una recomendación pensada para tu negocio</h3>
+          <p>
+            Podemos analizar lo que respondiste y prepararte ideas concretas para empezar a usar IA.
+          </p>
+          <button type="button" className="boton boton-generar-ia" onClick={onGenerar}>
+            <span aria-hidden="true">✦</span>
+            Generar recomendación con IA
+          </button>
+        </div>
+      </section>
+    )
+  }
+
   if (generando) {
     return (
       <section className="tarjeta devolucion-cargando" aria-live="polite" aria-busy="true">
@@ -26,10 +46,6 @@ export default function DevolucionIA({ generando, devolucion }) {
   const saludo = devolucion?.saludo || DEVOLUCION_GENERICA.saludo
   const mensaje = devolucion?.mensaje || DEVOLUCION_GENERICA.mensaje
   const cierre = devolucion?.cierre || DEVOLUCION_GENERICA.cierre
-
-  function abrirAsistente() {
-    document.querySelector('.lanzador-asistente')?.click()
-  }
 
   return (
     <section
@@ -65,17 +81,6 @@ export default function DevolucionIA({ generando, devolucion }) {
       )}
 
       <blockquote className="cierre-devolucion">{cierre}</blockquote>
-
-      <div className="invitacion-asistente">
-        <div>
-          <h4>¿Querés dar el primer paso ahora?</h4>
-          <p>Preguntale al asistente, con tus palabras y sin tecnicismos.</p>
-        </div>
-        <button type="button" className="boton boton-cta-ia" onClick={abrirAsistente}>
-          <span aria-hidden="true">💬</span>
-          Mostrame cómo empezar
-        </button>
-      </div>
     </section>
   )
 }
