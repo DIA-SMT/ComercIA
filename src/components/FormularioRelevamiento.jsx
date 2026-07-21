@@ -41,6 +41,9 @@ export default function FormularioRelevamiento({
   valoresIniciales = null,
   guardando = false,
   textoBoton = 'Guardar',
+  // La carga nueva lo oculta: todo relevamiento arranca como "Pendiente"
+  // y el estado se cambia después desde el detalle.
+  mostrarEstado = true,
   onGuardar,
 }) {
   const [datos, setDatos] = useState(() => {
@@ -466,20 +469,22 @@ export default function FormularioRelevamiento({
         <fieldset className="seccion-form">
           <legend>Seguimiento</legend>
           <p className="seccion-descripcion">Campos internos del equipo relevador.</p>
-          <div className="campo">
-            <label htmlFor="estado">Estado del relevamiento</label>
-            <select
-              id="estado"
-              value={datos.estado}
-              onChange={(e) => cambiar('estado', e.target.value)}
-            >
-              {ESTADOS.map((estado) => (
-                <option key={estado} value={estado}>
-                  {estado}
-                </option>
-              ))}
-            </select>
-          </div>
+          {mostrarEstado && (
+            <div className="campo">
+              <label htmlFor="estado">Estado del relevamiento</label>
+              <select
+                id="estado"
+                value={datos.estado}
+                onChange={(e) => cambiar('estado', e.target.value)}
+              >
+                {ESTADOS.map((estado) => (
+                  <option key={estado} value={estado}>
+                    {estado}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <div className="campo">
             <label htmlFor="observaciones">Observaciones</label>
             <textarea

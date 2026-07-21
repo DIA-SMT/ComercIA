@@ -60,6 +60,7 @@ export default function Carga() {
         <FormularioRelevamiento
           key={claveForm}
           modo="relevador"
+          mostrarEstado={false}
           guardando={guardando}
           textoBoton="Guardar relevamiento"
           onGuardar={guardar}

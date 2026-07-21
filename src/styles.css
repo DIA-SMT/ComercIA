@@ -35,6 +35,12 @@ html,
 body {
   margin: 0;
   padding: 0;
+  /* Blindaje para Safari de iOS: sin auto-agrandado de tipografía y sin
+     scroll lateral aunque algún elemento se pase un píxel (clip no rompe
+     el header sticky, a diferencia de hidden) */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-x: clip;
 }
 
 body {
