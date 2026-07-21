@@ -50,8 +50,6 @@ export default function Inicio({ sesion }) {
             <QRCodeCanvas value={urlPublica} size={260} level="M" includeMargin />
           </div>
 
-          <div className="url-publica">{urlPublica}</div>
-
           {aviso && <div className="aviso aviso-exito">{aviso}</div>}
 
           <div className="acciones-form no-imprimir" style={{ justifyContent: 'center' }}>
@@ -65,10 +63,6 @@ export default function Inicio({ sesion }) {
               Copiar enlace
             </button>
           </div>
-
-          <p className="enlace-encuesta no-imprimir">
-            <Link to="/registro">Abrir la encuesta en este dispositivo →</Link>
-          </p>
         </div>
 
         <div className="tarjeta no-imprimir">
