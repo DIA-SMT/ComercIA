@@ -939,6 +939,207 @@ table.tabla {
   margin: 0;
 }
 
+/* Cierre personalizado de la encuesta pública */
+
+.devolucion-cargando {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  border-top: 4px solid var(--azul-500);
+}
+
+.devolucion-cargando h3 {
+  color: var(--azul-800);
+  font-size: 1.05rem;
+  margin-bottom: 0.2rem;
+}
+
+.devolucion-cargando p {
+  color: var(--gris-500);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.indicador-carga {
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 3px solid var(--azul-100);
+  border-top-color: var(--azul-600);
+  border-radius: 50%;
+  flex: 0 0 auto;
+  animation: giro-carga 0.9s linear infinite;
+}
+
+@keyframes giro-carga {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.devolucion-ia {
+  margin-bottom: 1rem;
+  padding: 1.25rem 1rem;
+  border-top: 4px solid var(--azul-500);
+}
+
+.devolucion-generica {
+  border-top-color: var(--verde);
+}
+
+.encabezado-devolucion {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  margin-bottom: 0.9rem;
+}
+
+.icono-devolucion {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: var(--ambar-claro);
+  color: var(--ambar);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  font-size: 1.25rem;
+}
+
+.etiqueta-devolucion {
+  color: var(--azul-600);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin: 0 0 0.2rem;
+}
+
+.encabezado-devolucion h3 {
+  color: var(--azul-900);
+  font-size: 1.25rem;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.mensaje-devolucion {
+  color: var(--gris-700);
+  font-size: 1rem;
+  line-height: 1.65;
+  margin: 0 0 1.25rem;
+}
+
+.ideas-devolucion h4,
+.invitacion-asistente h4 {
+  color: var(--azul-800);
+  font-size: 0.98rem;
+  margin: 0 0 0.65rem;
+}
+
+.ideas-devolucion ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.ideas-devolucion li {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  align-items: start;
+  gap: 0.7rem;
+  padding: 0.85rem;
+  background: var(--azul-50);
+  border: 1px solid var(--azul-100);
+  border-radius: 8px;
+  color: var(--gris-700);
+  line-height: 1.55;
+}
+
+.numero-idea {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--azul-800);
+  color: var(--blanco);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.cierre-devolucion {
+  margin: 1.25rem 0;
+  padding: 0.9rem 1rem;
+  background: var(--verde-claro);
+  border: 0;
+  border-left: 4px solid var(--verde);
+  border-radius: 0 8px 8px 0;
+  color: var(--gris-900);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+.invitacion-asistente {
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--gris-200);
+}
+
+.invitacion-asistente p {
+  color: var(--gris-500);
+  font-size: 0.88rem;
+  margin: 0 0 0.85rem;
+}
+
+.boton-cta-ia {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 46px;
+  white-space: normal;
+}
+
+.carga-relevamiento {
+  margin: 0 auto;
+}
+
+.acciones-carga-completa .boton {
+  flex: 1 1 190px;
+}
+
+@media (min-width: 600px) {
+  .devolucion-ia {
+    padding: 1.5rem;
+  }
+
+  .invitacion-asistente {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .invitacion-asistente p {
+    margin-bottom: 0;
+  }
+
+  .boton-cta-ia {
+    width: auto;
+    flex: 0 0 auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .indicador-carga {
+    animation: none;
+  }
+}
+
 /* ---------- Asistente educativo ---------- */
 
 /* Burbuja flotante, siempre visible en la encuesta pública */

@@ -4,12 +4,15 @@ import { pedirRecomendaciones } from '../lib/ia'
 import { nuevoId } from '../lib/id'
 import FormularioRelevamiento from '../components/FormularioRelevamiento.jsx'
 import AsistenteIA from '../components/AsistenteIA.jsx'
+import DevolucionIA from '../components/DevolucionIA.jsx'
+
+const DEVOLUCION_INICIAL = { saludo: '', mensaje: '', recomendaciones: [], cierre: '' }
 
 export default function Publico() {
   const [enviado, setEnviado] = useState(false)
   const [guardando, setGuardando] = useState(false)
   const [error, setError] = useState('')
-  const [recomendaciones, setRecomendaciones] = useState([])
+  const [devolucion, setDevolucion] = useState(DEVOLUCION_INICIAL)
   const [generandoRecomendaciones, setGenerandoRecomendaciones] = useState(false)
 
   async function guardar(datos) {
@@ -37,14 +40,14 @@ export default function Publico() {
     window.scrollTo({ top: 0 })
 
     setGenerandoRecomendaciones(true)
-    const sugerencias = await pedirRecomendaciones(id, datos)
-    setRecomendaciones(sugerencias)
+    const resultado = await pedirRecomendaciones(id, datos)
+    setDevolucion(resultado)
     setGenerandoRecomendaciones(false)
   }
 
   function cargarOtro() {
     setEnviado(false)
-    setRecomendaciones([])
+    setDevolucion(DEVOLUCION_INICIAL)
     setGenerandoRecomendaciones(false)
   }
 
@@ -68,27 +71,7 @@ export default function Publico() {
             </p>
           </div>
 
-          {generandoRecomendaciones && (
-            <div className="tarjeta caja-recomendaciones" aria-live="polite">
-              <h3>Estamos preparando algunas ideas para tu negocio…</h3>
-              <p className="seccion-descripcion">Dura unos segundos.</p>
-            </div>
-          )}
-
-          {!generandoRecomendaciones && recomendaciones.length > 0 && (
-            <div className="tarjeta caja-recomendaciones" aria-live="polite">
-              <h3>Según lo que nos contaste, así podrías empezar a usar IA en tu negocio:</h3>
-              <ul className="lista-recomendaciones">
-                {recomendaciones.map((recomendacion, indice) => (
-                  <li key={indice}>{recomendacion}</li>
-                ))}
-              </ul>
-              <p className="nota-recomendaciones">
-                Son ideas generadas automáticamente para arrancar. En la capacitación las vemos en
-                detalle.
-              </p>
-            </div>
-          )}
+          <DevolucionIA generando={generandoRecomendaciones} devolucion={devolucion} />
 
           <div className="acciones-form" style={{ justifyContent: 'center' }}>
             <button className="boton boton-secundario" onClick={cargarOtro}>
