@@ -1,3 +1,6 @@
+import { useState } from 'react'
+import { guardarOpinionRecomendacion } from '../lib/ia'
+
 const DEVOLUCION_GENERICA = {
   saludo: 'Gracias por abrirle la puerta a nuevas ideas para tu negocio',
   mensaje:
@@ -6,7 +9,50 @@ const DEVOLUCION_GENERICA = {
     'Este puede ser tu primer paso: aprender de a poco también es una forma de hacer crecer tu negocio.',
 }
 
-export default function DevolucionIA({ generando, devolucion }) {
+export default function DevolucionIA({
+  generando,
+  generada,
+  devolucion,
+  relevamientoId,
+  onGenerar,
+}) {
+  const [opinion, setOpinion] = useState(null)
+  const [guardandoOpinion, setGuardandoOpinion] = useState(false)
+  const [errorOpinion, setErrorOpinion] = useState('')
+
+  async function responderOpinion(gusto) {
+    if (guardandoOpinion || opinion !== null) return
+    setGuardandoOpinion(true)
+    setErrorOpinion('')
+    const guardada = await guardarOpinionRecomendacion(relevamientoId, gusto)
+    setGuardandoOpinion(false)
+    if (guardada) {
+      setOpinion(gusto)
+    } else {
+      setErrorOpinion('No pudimos guardar tu respuesta. Probá de nuevo.')
+    }
+  }
+
+  if (!generada && !generando) {
+    return (
+      <section className="tarjeta invitacion-recomendacion">
+        <span className="icono-devolucion" aria-hidden="true">
+          ✦
+        </span>
+        <div>
+          <h3>Una recomendación pensada para tu negocio</h3>
+          <p>
+            Podemos analizar lo que respondiste y prepararte ideas concretas para empezar a usar IA.
+          </p>
+          <button type="button" className="boton boton-generar-ia" onClick={onGenerar}>
+            <span aria-hidden="true">✦</span>
+            Generar recomendación con IA
+          </button>
+        </div>
+      </section>
+    )
+  }
+
   if (generando) {
     return (
       <section className="tarjeta devolucion-cargando" aria-live="polite" aria-busy="true">
@@ -26,10 +72,6 @@ export default function DevolucionIA({ generando, devolucion }) {
   const saludo = devolucion?.saludo || DEVOLUCION_GENERICA.saludo
   const mensaje = devolucion?.mensaje || DEVOLUCION_GENERICA.mensaje
   const cierre = devolucion?.cierre || DEVOLUCION_GENERICA.cierre
-
-  function abrirAsistente() {
-    document.querySelector('.lanzador-asistente')?.click()
-  }
 
   return (
     <section
@@ -66,16 +108,43 @@ export default function DevolucionIA({ generando, devolucion }) {
 
       <blockquote className="cierre-devolucion">{cierre}</blockquote>
 
-      <div className="invitacion-asistente">
-        <div>
-          <h4>¿Querés dar el primer paso ahora?</h4>
-          <p>Preguntale al asistente, con tus palabras y sin tecnicismos.</p>
+      {tieneIdeas && (
+        <div className="encuesta-recomendacion">
+          {opinion === null ? (
+            <>
+              <h4>¿Te gustó la recomendación?</h4>
+              <div className="opciones-opinion" role="group" aria-label="¿Te gustó la recomendación?">
+                <button
+                  type="button"
+                  className="boton-opinion"
+                  disabled={guardandoOpinion}
+                  onClick={() => responderOpinion(true)}
+                >
+                  Sí
+                </button>
+                <button
+                  type="button"
+                  className="boton-opinion"
+                  disabled={guardandoOpinion}
+                  onClick={() => responderOpinion(false)}
+                >
+                  No
+                </button>
+              </div>
+              {guardandoOpinion && <p className="estado-opinion">Guardando respuesta…</p>}
+              {errorOpinion && (
+                <p className="error-opinion" role="alert">
+                  {errorOpinion}
+                </p>
+              )}
+            </>
+          ) : (
+            <p className="opinion-guardada" role="status">
+              Gracias por tu respuesta.
+            </p>
+          )}
         </div>
-        <button type="button" className="boton boton-cta-ia" onClick={abrirAsistente}>
-          <span aria-hidden="true">💬</span>
-          Mostrame cómo empezar
-        </button>
-      </div>
+      )}
     </section>
   )
 }

@@ -3,7 +3,6 @@ import { supabase } from '../supabaseClient'
 import { pedirRecomendaciones } from '../lib/ia'
 import { nuevoId } from '../lib/id'
 import FormularioRelevamiento from '../components/FormularioRelevamiento.jsx'
-import AsistenteIA from '../components/AsistenteIA.jsx'
 import DevolucionIA from '../components/DevolucionIA.jsx'
 
 const DEVOLUCION_INICIAL = { saludo: '', mensaje: '', recomendaciones: [], cierre: '' }
@@ -14,6 +13,8 @@ export default function Publico() {
   const [error, setError] = useState('')
   const [devolucion, setDevolucion] = useState(DEVOLUCION_INICIAL)
   const [generandoRecomendaciones, setGenerandoRecomendaciones] = useState(false)
+  const [recomendacionGenerada, setRecomendacionGenerada] = useState(false)
+  const [relevamientoGuardado, setRelevamientoGuardado] = useState(null)
 
   async function guardar(datos) {
     setGuardando(true)
@@ -34,20 +35,30 @@ export default function Publico() {
       return
     }
 
-    // Los datos ya están a salvo: a partir de acá, si algo falla con las
-    // recomendaciones, no se pierde nada del relevamiento.
+    // La IA no se invoca durante el envío: el relevamiento queda guardado y
+    // la persona decide después si quiere generar su recomendación.
+    setRelevamientoGuardado({ id, datos })
     setEnviado(true)
     window.scrollTo({ top: 0 })
+  }
 
+  async function generarRecomendacion() {
+    if (!relevamientoGuardado || generandoRecomendaciones) return
     setGenerandoRecomendaciones(true)
-    const resultado = await pedirRecomendaciones(id, datos)
+    const resultado = await pedirRecomendaciones(
+      relevamientoGuardado.id,
+      relevamientoGuardado.datos,
+    )
     setDevolucion(resultado)
+    setRecomendacionGenerada(true)
     setGenerandoRecomendaciones(false)
   }
 
   function cargarOtro() {
     setEnviado(false)
     setDevolucion(DEVOLUCION_INICIAL)
+    setRecomendacionGenerada(false)
+    setRelevamientoGuardado(null)
     setGenerandoRecomendaciones(false)
   }
 
@@ -71,7 +82,13 @@ export default function Publico() {
             </p>
           </div>
 
-          <DevolucionIA generando={generandoRecomendaciones} devolucion={devolucion} />
+          <DevolucionIA
+            generando={generandoRecomendaciones}
+            generada={recomendacionGenerada}
+            devolucion={devolucion}
+            relevamientoId={relevamientoGuardado?.id}
+            onGenerar={generarRecomendacion}
+          />
 
           <div className="acciones-form" style={{ justifyContent: 'center' }}>
             <button className="boton boton-secundario" onClick={cargarOtro}>
@@ -84,7 +101,6 @@ export default function Publico() {
             Inteligencia Artificial y no se comparten con terceros.
           </p>
         </main>
-        <AsistenteIA />
       </>
     )
   }
@@ -114,7 +130,6 @@ export default function Publico() {
           Inteligencia Artificial y no se comparten con terceros.
         </p>
       </main>
-      <AsistenteIA />
     </>
   )
 }

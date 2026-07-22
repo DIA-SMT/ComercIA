@@ -27,6 +27,13 @@ alter table public.relevamientos
 alter table public.relevamientos
   add column if not exists devolucion_ia jsonb;
 
+-- Opinión opcional sobre la devolución generada
+alter table public.relevamientos
+  add column if not exists recomendacion_gusto boolean;
+
+alter table public.relevamientos
+  add column if not exists recomendacion_opinada_at timestamptz;
+
 -- ============================================================
 -- Nota sobre seguridad:
 -- Las recomendaciones las escribe la Edge Function usando la

@@ -4,7 +4,6 @@ import { supabase } from '../supabaseClient'
 import { pedirRecomendaciones } from '../lib/ia'
 import { nuevoId } from '../lib/id'
 import FormularioRelevamiento from '../components/FormularioRelevamiento.jsx'
-import AsistenteIA from '../components/AsistenteIA.jsx'
 import DevolucionIA from '../components/DevolucionIA.jsx'
 
 const DEVOLUCION_INICIAL = { saludo: '', mensaje: '', recomendaciones: [], cierre: '' }
@@ -16,6 +15,8 @@ export default function Carga() {
   const [enviado, setEnviado] = useState(false)
   const [devolucion, setDevolucion] = useState(DEVOLUCION_INICIAL)
   const [generandoRecomendaciones, setGenerandoRecomendaciones] = useState(false)
+  const [recomendacionGenerada, setRecomendacionGenerada] = useState(false)
+  const [relevamientoGuardado, setRelevamientoGuardado] = useState(null)
 
   async function guardar(datos) {
     setGuardando(true)
@@ -32,20 +33,30 @@ export default function Carga() {
       return
     }
 
-    // El relevamiento ya quedó guardado. La devolución se pide después y
-    // continúa siendo best-effort, igual que en la encuesta pública.
+    // Igual que en la encuesta pública, la IA se invoca únicamente si la
+    // persona elige generar una recomendación después de guardar.
+    setRelevamientoGuardado({ id, datos })
     setEnviado(true)
     window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
+  async function generarRecomendacion() {
+    if (!relevamientoGuardado || generandoRecomendaciones) return
     setGenerandoRecomendaciones(true)
-    const resultado = await pedirRecomendaciones(id, datos)
+    const resultado = await pedirRecomendaciones(
+      relevamientoGuardado.id,
+      relevamientoGuardado.datos,
+    )
     setDevolucion(resultado)
+    setRecomendacionGenerada(true)
     setGenerandoRecomendaciones(false)
   }
 
   function cargarOtro() {
     setEnviado(false)
     setDevolucion(DEVOLUCION_INICIAL)
+    setRecomendacionGenerada(false)
+    setRelevamientoGuardado(null)
     setGenerandoRecomendaciones(false)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -65,7 +76,13 @@ export default function Carga() {
             </p>
           </div>
 
-          <DevolucionIA generando={generandoRecomendaciones} devolucion={devolucion} />
+          <DevolucionIA
+            generando={generandoRecomendaciones}
+            generada={recomendacionGenerada}
+            devolucion={devolucion}
+            relevamientoId={relevamientoGuardado?.id}
+            onGenerar={generarRecomendacion}
+          />
 
           <div className="acciones-form acciones-carga-completa">
             <button type="button" className="boton" onClick={cargarOtro}>
@@ -85,7 +102,6 @@ export default function Carga() {
             Inteligencia Artificial y no se comparten con terceros.
           </p>
         </div>
-        <AsistenteIA />
       </>
     )
   }
@@ -113,7 +129,6 @@ export default function Carga() {
           Inteligencia Artificial y no se comparten con terceros.
         </p>
       </div>
-      <AsistenteIA />
     </>
   )
 }
