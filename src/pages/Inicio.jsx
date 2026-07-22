@@ -74,7 +74,7 @@ export default function Inicio({ sesion }) {
           </p>
           <div className="acciones-form" style={{ marginTop: 0 }}>
             <Link className="boton" to="/carga">
-              Cargar relevamiento a mano
+              Cargar relevamiento
             </Link>
             <Link className="boton boton-secundario" to="/panel">
               Ver relevamientos

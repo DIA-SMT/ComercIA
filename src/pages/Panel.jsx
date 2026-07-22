@@ -19,6 +19,14 @@ function EtiquetaIA({ usaIa }) {
   return <span className="etiqueta etiqueta-no">Sin dato</span>
 }
 
+function EtiquetaOpinion({ gusto }) {
+  if (gusto === true) return <span className="etiqueta etiqueta-si">Le gustó</span>
+  if (gusto === false) {
+    return <span className="etiqueta etiqueta-opinion-no">No le gustó</span>
+  }
+  return <span className="etiqueta etiqueta-origen">Sin respuesta</span>
+}
+
 function textoOrigen(origen) {
   return origen === 'relevador' ? 'Relevador' : 'Comercio'
 }
@@ -34,6 +42,7 @@ export default function Panel() {
   const [filtroIA, setFiltroIA] = useState('')
   const [filtroEstado, setFiltroEstado] = useState('')
   const [filtroOrigen, setFiltroOrigen] = useState('')
+  const [filtroOpinion, setFiltroOpinion] = useState('')
 
   useEffect(() => {
     async function cargarRegistros() {
@@ -59,6 +68,13 @@ export default function Panel() {
       if (filtroIA === 'no' && r.usa_ia !== false) return false
       if (filtroEstado && r.estado !== filtroEstado) return false
       if (filtroOrigen && r.origen !== filtroOrigen) return false
+      if (filtroOpinion === 'si' && r.recomendacion_gusto !== true) return false
+      if (filtroOpinion === 'no' && r.recomendacion_gusto !== false) return false
+      if (
+        filtroOpinion === 'sin-respuesta' &&
+        (r.recomendacion_gusto === true || r.recomendacion_gusto === false)
+      )
+        return false
       if (texto) {
         const blanco = [r.nombre_comercio, r.contacto_nombre, r.direccion, r.contacto_email]
           .join(' ')
@@ -67,7 +83,15 @@ export default function Panel() {
       }
       return true
     })
-  }, [registros, busqueda, filtroRubro, filtroIA, filtroEstado, filtroOrigen])
+  }, [
+    registros,
+    busqueda,
+    filtroRubro,
+    filtroIA,
+    filtroEstado,
+    filtroOrigen,
+    filtroOpinion,
+  ])
 
   const metricas = useMemo(() => {
     const total = registros.length
@@ -205,6 +229,16 @@ export default function Panel() {
           <option value="relevador">Relevador</option>
           <option value="comercio">Comercio (QR)</option>
         </select>
+        <select
+          value={filtroOpinion}
+          onChange={(e) => setFiltroOpinion(e.target.value)}
+          aria-label="Filtrar por opinión sobre la recomendación"
+        >
+          <option value="">Opinión: todas</option>
+          <option value="si">Le gustó</option>
+          <option value="no">No le gustó</option>
+          <option value="sin-respuesta">Sin respuesta</option>
+        </select>
       </div>
 
       {filtrados.length === 0 ? (
@@ -225,6 +259,7 @@ export default function Panel() {
                   <th>IA</th>
                   <th>Estado</th>
                   <th>Origen</th>
+                  <th>Opinión</th>
                   <th>Fecha</th>
                 </tr>
               </thead>
@@ -249,6 +284,9 @@ export default function Panel() {
                     <td>
                       <span className="etiqueta etiqueta-origen">{textoOrigen(r.origen)}</span>
                     </td>
+                    <td>
+                      <EtiquetaOpinion gusto={r.recomendacion_gusto} />
+                    </td>
                     <td className="secundario">{formatearFecha(r.created_at)}</td>
                   </tr>
                 ))}
@@ -270,6 +308,7 @@ export default function Panel() {
                 <div className="etiquetas">
                   <EtiquetaIA usaIa={r.usa_ia} />
                   <span className="etiqueta etiqueta-origen">{textoOrigen(r.origen)}</span>
+                  <EtiquetaOpinion gusto={r.recomendacion_gusto} />
                 </div>
               </button>
             ))}
