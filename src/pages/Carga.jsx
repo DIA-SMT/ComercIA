@@ -62,6 +62,8 @@ export default function Carga() {
   }
 
   if (enviado) {
+    const nombrePersona = relevamientoGuardado?.datos?.contacto_nombre?.trim()
+
     return (
       <>
         <div className="contenedor-angosto carga-relevamiento">
@@ -69,7 +71,11 @@ export default function Carga() {
             <div className="icono" aria-hidden="true">
               ✓
             </div>
-            <h2>¡Gracias! Tus datos fueron registrados.</h2>
+            <h2>
+              {nombrePersona
+                ? `¡Gracias, ${nombrePersona}! Tus datos fueron registrados.`
+                : '¡Gracias! Tus datos fueron registrados.'}
+            </h2>
             <p>
               Con esta información vamos a organizar la capacitación sobre Inteligencia Artificial.
               Nos vamos a poner en contacto por email.
