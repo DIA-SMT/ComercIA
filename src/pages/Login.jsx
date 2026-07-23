@@ -30,6 +30,7 @@ export default function Login() {
     <div className="pantalla-login">
       <div className="caja-login">
         <div className="logo-login">
+          <img src="/logo.svg" alt="Logo de ComercIA" className="logo-grande" />
           <h1>
             Comerc<span>IA</span>
           </h1>

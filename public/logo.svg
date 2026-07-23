@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
+  <!-- Logo ComercIA / Ciudad Digital: dos pétalos y sol -->
+  <circle cx="142" cy="36" r="27" fill="#F5D90A"/>
+  <path d="M107 232 C 28 196, 8 100, 46 16 C 106 58, 124 150, 107 232 Z" fill="#1266F1"/>
+  <path d="M123 232 C 112 150, 142 76, 198 46 C 224 138, 190 206, 123 232 Z" fill="#35B0FA"/>
+</svg>
