@@ -16,7 +16,7 @@ export default function Layout({ children }) {
       <nav className="nav">
         <div className="nav-contenido">
           <NavLink to="/" className="nav-marca">
-            <img src="/logo.svg" alt="" className="logo-nav" />
+            <img src="/logo.png" alt="" className="logo-nav" />
             Comerc<span>IA</span>
           </NavLink>
           <div className="nav-enlaces">

@@ -32,7 +32,7 @@ export default function Inicio({ sesion }) {
   return (
     <>
       <header className="encabezado-publico">
-        <img src="/logo.svg" alt="" className="logo-encabezado" />
+        <img src="/logo.png" alt="" className="logo-encabezado" />
         <h1>
           Comerc<span>IA</span>
         </h1>
